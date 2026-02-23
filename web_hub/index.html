@@ -133,6 +133,17 @@
 
       <div id="emojiContent" class="emoji-content" hidden>
         <p class="emoji-intro">Tap any emoji button and watch it burst and float across the screen.</p>
+        <div class="emoji-controls" role="group" aria-label="Emoji burst controls">
+          <label class="emoji-range-wrap" for="emojiBurstPower">
+            <span>Burst Power</span>
+            <input id="emojiBurstPower" type="range" min="6" max="28" step="1" value="12" />
+          </label>
+          <span class="emoji-burst-value" id="emojiBurstValue" aria-live="polite">12</span>
+          <label class="emoji-sound-toggle" for="emojiSoundToggle">
+            <input id="emojiSoundToggle" type="checkbox" checked />
+            <span>Sound</span>
+          </label>
+        </div>
         <div class="emoji-picker" role="group" aria-label="Emoji launcher buttons">
           <button type="button" class="emoji-btn" aria-label="Smile">&#x1F600;</button>
           <button type="button" class="emoji-btn" aria-label="Cool face">&#x1F60E;</button>
@@ -219,5 +230,6 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 

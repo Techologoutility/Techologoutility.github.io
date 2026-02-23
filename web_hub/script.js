@@ -20,6 +20,9 @@ const emojiContent = document.getElementById("emojiContent");
 const toggleEmojiBtn = document.getElementById("toggleEmojiBtn");
 const emojiClosedHint = document.getElementById("emojiClosedHint");
 const emojiFxLayer = document.getElementById("emojiFxLayer");
+const emojiBurstPower = document.getElementById("emojiBurstPower");
+const emojiBurstValue = document.getElementById("emojiBurstValue");
+const emojiSoundToggle = document.getElementById("emojiSoundToggle");
 
 const FEEDBACK_REPO_URL = "https://github.com/Techologoutility/Techologoutility.github.io";
 
@@ -27,6 +30,7 @@ let expression = "0";
 let showFreshInput = false;
 let isCalculatorOpen = false;
 let isEmojiOpen = false;
+let emojiAudioContext = null;
 
 function updateClock() {
   const now = new Date();
@@ -179,19 +183,22 @@ function maybeOpenEmojiFromHash() {
   }
 }
 
-function createFlyingEmoji(char, originX, originY) {
+function createFlyingEmoji(char, originX, originY, power) {
   const node = document.createElement("span");
   node.className = "flying-emoji";
   node.textContent = char;
 
+  const intensity = Math.max(6, Number(power) || 12);
   const angle = Math.random() * Math.PI * 2;
-  const distance = 90 + Math.random() * 260;
+  const distance = 80 + Math.random() * (18 * intensity);
   const driftX = Math.cos(angle) * distance;
-  const driftY = Math.sin(angle) * distance - (30 + Math.random() * 120);
-  const rotate = (-220 + Math.random() * 440).toFixed(0) + "deg";
-  const duration = Math.floor(900 + Math.random() * 900) + "ms";
-  const scale = (0.9 + Math.random() * 1.2).toFixed(2);
+  const driftY = Math.sin(angle) * distance - (20 + Math.random() * (10 * intensity));
+  const rotate = (-240 + Math.random() * 480).toFixed(0) + "deg";
+  const duration = Math.floor(700 + Math.random() * (45 * intensity)) + "ms";
+  const scale = (0.85 + Math.random() * 1.4).toFixed(2);
+  const fontSize = (18 + Math.random() * (1.6 * intensity)).toFixed(0) + "px";
 
+  node.style.fontSize = fontSize;
   node.style.setProperty("--start-x", originX + "px");
   node.style.setProperty("--start-y", originY + "px");
   node.style.setProperty("--end-x", originX + driftX + "px");
@@ -208,22 +215,69 @@ function burstEmoji(char, anchorEl) {
   const rect = anchorEl.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
+  const count = Math.max(6, Number(emojiBurstPower.value) || 12);
 
-  for (let i = 0; i < 12; i += 1) {
-    const jitterX = (Math.random() - 0.5) * 20;
-    const jitterY = (Math.random() - 0.5) * 20;
-    createFlyingEmoji(char, centerX + jitterX, centerY + jitterY);
+  for (let i = 0; i < count; i += 1) {
+    const jitterX = (Math.random() - 0.5) * 24;
+    const jitterY = (Math.random() - 0.5) * 24;
+    createFlyingEmoji(char, centerX + jitterX, centerY + jitterY, count);
   }
 }
 
 function handleEmojiPickerClick(event) {
   const button = event.target.closest(".emoji-btn");
   if (!button) return;
+
   const char = (button.textContent || "").trim();
   if (!char) return;
+
+  const power = Number(emojiBurstPower.value) || 12;
   burstEmoji(char, button);
+  playEmojiBurstSound(power);
 }
 
+function updateEmojiBurstLabel() {
+  emojiBurstValue.textContent = String(emojiBurstPower.value);
+}
+
+function getEmojiAudioContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!emojiAudioContext) {
+    emojiAudioContext = new AudioCtx();
+  }
+  return emojiAudioContext;
+}
+
+function playEmojiBurstSound(power) {
+  if (!emojiSoundToggle.checked) return;
+
+  const ctx = getEmojiAudioContext();
+  if (!ctx) return;
+
+  if (ctx.state === "suspended") {
+    ctx.resume().catch(() => {});
+  }
+
+  const now = ctx.currentTime;
+  const intensity = Math.max(6, Number(power) || 12);
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(280 + intensity * 12, now);
+  osc.frequency.exponentialRampToValueAtTime(180 + intensity * 6, now + 0.12);
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.03, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.15);
+}
 function handleKeyboard(event) {
   if (event.ctrlKey || event.metaKey || event.altKey) return;
   if (isTypingTarget(event.target)) return;
@@ -334,6 +388,7 @@ document.querySelector(".emoji-picker").addEventListener("click", handleEmojiPic
 clearAllBtn.addEventListener("click", resetCalculator);
 toggleCalculatorBtn.addEventListener("click", () => setCalculatorOpen(!isCalculatorOpen));
 toggleEmojiBtn.addEventListener("click", () => setEmojiOpen(!isEmojiOpen));
+emojiBurstPower.addEventListener("input", updateEmojiBurstLabel);
 document.addEventListener("keydown", handleKeyboard);
 window.addEventListener("hashchange", maybeOpenCalculatorFromHash);
 window.addEventListener("hashchange", maybeOpenEmojiFromHash);
@@ -345,8 +400,10 @@ year.textContent = new Date().getFullYear();
 resetCalculator();
 setCalculatorOpen(false);
 setEmojiOpen(false);
+updateEmojiBurstLabel();
 updateClock();
 setInterval(updateClock, 1000);
+
 
 
 

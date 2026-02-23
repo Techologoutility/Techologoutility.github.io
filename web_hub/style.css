@@ -650,3 +650,66 @@ body {
   font-size: clamp(1.1rem, 2.6vw, 1.5rem);
   color: #cfe2ff;
 }
+
+.emoji-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.emoji-range-wrap {
+  display: grid;
+  gap: 6px;
+}
+
+.emoji-range-wrap span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+#emojiBurstPower {
+  width: 100%;
+  accent-color: #53f1c8;
+}
+
+.emoji-burst-value {
+  min-width: 2.5ch;
+  text-align: center;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.emoji-sound-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.emoji-sound-toggle input {
+  accent-color: #53f1c8;
+}
+
+.flying-emoji {
+  text-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 700px) {
+  .emoji-controls {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .emoji-burst-value {
+    text-align: left;
+  }
+}
