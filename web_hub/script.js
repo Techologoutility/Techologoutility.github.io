@@ -81,6 +81,44 @@ function initializeTheme() {
   themeSelect.value = savedTheme;
   applyTheme(savedTheme);
 }
+function getClockTargetDate(baseDate, timeZone) {
+  if (!timeZone) {
+    return baseDate;
+  }
+
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+
+    const parts = formatter.formatToParts(baseDate);
+    const map = {};
+    for (const part of parts) {
+      if (part.type !== "literal") {
+        map[part.type] = part.value;
+      }
+    }
+
+    return new Date(
+      Number(map.year),
+      Number(map.month) - 1,
+      Number(map.day),
+      Number(map.hour),
+      Number(map.minute),
+      Number(map.second),
+      baseDate.getMilliseconds(),
+    );
+  } catch {
+    return baseDate;
+  }
+}
 function updateClock() {
   if (!clockTime || !clockDate || !clockZone || !clockRegionSelect || !hourHand || !minuteHand || !secondHand) {
     return;
@@ -93,19 +131,11 @@ function updateClock() {
   const selectedLocale = selectedOption?.dataset?.locale || "en-US";
   const timeZone = selectedValue === "local" ? undefined : selectedValue;
 
-  const timeParts = new Intl.DateTimeFormat("en-GB", {
-    timeZone,
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).formatToParts(now);
-
-  const getPart = (type) => Number(timeParts.find((p) => p.type === type)?.value || 0);
-  const hour24 = getPart("hour");
-  const minute = getPart("minute");
-  const second = getPart("second");
-  const ms = now.getMilliseconds();
+  const target = getClockTargetDate(now, timeZone);
+  const hour24 = target.getHours();
+  const minute = target.getMinutes();
+  const second = target.getSeconds();
+  const ms = target.getMilliseconds();
 
   const hourAngle = ((hour24 % 12) + minute / 60 + second / 3600) * 30;
   const minuteAngle = (minute + second / 60 + ms / 60000) * 6;
@@ -115,26 +145,36 @@ function updateClock() {
   minuteHand.style.transform = "translateX(-50%) rotate(" + minuteAngle + "deg)";
   secondHand.style.transform = "translateX(-50%) rotate(" + secondAngle + "deg)";
 
-  clockTime.textContent = new Intl.DateTimeFormat(selectedLocale, {
-    timeZone,
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  }).format(now);
+  try {
+    clockTime.textContent = new Intl.DateTimeFormat(selectedLocale, {
+      timeZone,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    }).format(now);
 
-  clockDate.textContent = new Intl.DateTimeFormat(selectedLocale, {
-    timeZone,
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(now);
+    clockDate.textContent = new Intl.DateTimeFormat(selectedLocale, {
+      timeZone,
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(now);
+  } catch {
+    const pad = (n) => String(n).padStart(2, "0");
+    const hour12 = ((hour24 + 11) % 12) + 1;
+    const ampm = hour24 >= 12 ? "PM" : "AM";
+    clockTime.textContent = pad(hour12) + ":" + pad(minute) + ":" + pad(second) + " " + ampm;
+    clockDate.textContent = target.toDateString();
+  }
 
   const resolvedLocalZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const zoneText = selectedValue === "local" ? (resolvedLocalZone || "Local Time") : selectedValue;
   clockZone.textContent = "Timezone: " + zoneText;
-  clockRegionLabel.textContent = selectedLabel;
+  if (clockRegionLabel) {
+    clockRegionLabel.textContent = selectedLabel;
+  }
 }
 
 function startClockTicker() {
@@ -143,11 +183,7 @@ function startClockTicker() {
   }
 
   updateClock();
-  clockIntervalId = setInterval(() => {
-    try {
-      updateClock();
-    } catch {}
-  }, 250);
+  clockIntervalId = setInterval(updateClock, 200);
 }
 function renderDisplay() {
   display.value = expression || "0";
@@ -586,6 +622,7 @@ setCalculatorOpen(false);
 if (emojiSection) setEmojiOpen(false);
 if (emojiBurstPower && emojiBurstValue) updateEmojiBurstLabel();
 startClockTicker();
+
 
 
 
