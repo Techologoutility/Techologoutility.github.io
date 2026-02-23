@@ -624,3 +624,29 @@ body {
 
 
 
+
+.india-clock {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.india-clock-label {
+  margin: 0 0 4px;
+  color: var(--accent-2);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.india-clock-date {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.india-clock-time {
+  margin: 4px 0 0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+  color: #cfe2ff;
+}

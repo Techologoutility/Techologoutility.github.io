@@ -1,6 +1,8 @@
 const clockTime = document.getElementById("clockTime");
 const clockDate = document.getElementById("clockDate");
 const clockZone = document.getElementById("clockZone");
+const indiaClockDate = document.getElementById("indiaClockDate");
+const indiaClockTime = document.getElementById("indiaClockTime");
 const year = document.getElementById("year");
 const display = document.getElementById("calcDisplay");
 const clearAllBtn = document.getElementById("clearAllBtn");
@@ -28,6 +30,7 @@ let isEmojiOpen = false;
 
 function updateClock() {
   const now = new Date();
+
   clockTime.textContent = new Intl.DateTimeFormat([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -36,6 +39,22 @@ function updateClock() {
   }).format(now);
 
   clockDate.textContent = new Intl.DateTimeFormat([], {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(now);
+
+  indiaClockTime.textContent = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  }).format(now);
+
+  indiaClockDate.textContent = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -328,6 +347,7 @@ setCalculatorOpen(false);
 setEmojiOpen(false);
 updateClock();
 setInterval(updateClock, 1000);
+
 
 
 
