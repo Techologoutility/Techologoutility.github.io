@@ -504,6 +504,7 @@ body {
 }
 
 .emoji-btn {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.05);
@@ -534,6 +535,7 @@ body {
 }
 
 .flying-emoji {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
   position: fixed;
   left: 0;
   top: 0;
@@ -615,6 +617,10 @@ body {
   }
 
   .flying-emoji {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
     animation-duration: 1ms !important;
   }
 }
+
+
+

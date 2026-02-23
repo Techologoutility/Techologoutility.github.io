@@ -200,7 +200,7 @@ function burstEmoji(char, anchorEl) {
 function handleEmojiPickerClick(event) {
   const button = event.target.closest(".emoji-btn");
   if (!button) return;
-  const char = button.dataset.emoji;
+  const char = (button.textContent || "").trim();
   if (!char) return;
   burstEmoji(char, button);
 }
@@ -328,3 +328,6 @@ setCalculatorOpen(false);
 setEmojiOpen(false);
 updateClock();
 setInterval(updateClock, 1000);
+
+
+
