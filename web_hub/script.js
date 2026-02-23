@@ -38,6 +38,24 @@ let isCalculatorOpen = false;
 let isEmojiOpen = false;
 let isExtraClockOpen = false;
 let emojiAudioContext = null;
+let emojiNoiseBuffer = null;
+
+const EMOJI_PROFILES = {
+  "Smile": { animationClass: "fx-bounce", sound: "chime", spread: 1.0, countScale: 1.0 },
+  "Cool face": { animationClass: "fx-wave", sound: "cool", spread: 1.15, countScale: 1.0 },
+  "Party face": { animationClass: "fx-pop", sound: "party", spread: 1.35, countScale: 1.25 },
+  "Fire": { animationClass: "fx-flare", sound: "flare", spread: 1.1, countScale: 1.15 },
+  "Sparkles": { animationClass: "fx-spark", sound: "spark", spread: 1.25, countScale: 1.2 },
+  "Boom": { animationClass: "fx-boom", sound: "boom", spread: 1.45, countScale: 1.4 },
+  "Heart": { animationClass: "fx-heart", sound: "warm", spread: 0.9, countScale: 0.9 },
+  "Rocket": { animationClass: "fx-rocket", sound: "rocket", spread: 1.6, countScale: 1.1 },
+  "Party popper": { animationClass: "fx-party", sound: "confetti", spread: 1.35, countScale: 1.35 },
+  "Rainbow": { animationClass: "fx-rainbow", sound: "rainbow", spread: 1.2, countScale: 1.0 },
+};
+
+function getEmojiProfile(label) {
+  return EMOJI_PROFILES[label] || { animationClass: "fx-bounce", sound: "chime", spread: 1.0, countScale: 1.0 };
+}
 
 function updateClock() {
   const now = new Date();
@@ -212,24 +230,29 @@ function maybeOpenEmojiFromHash() {
   }
 }
 
-function createFlyingEmoji(char, originX, originY, power) {
+function createFlyingEmoji(char, originX, originY, power, profile) {
   const node = document.createElement("span");
-  node.className = "flying-emoji";
+  node.className = "flying-emoji " + (profile.animationClass || "fx-bounce");
   node.textContent = char;
 
   const intensity = Math.max(6, Number(power) || 12);
+  const spread = profile.spread || 1;
   const angle = Math.random() * Math.PI * 2;
-  const distance = 80 + Math.random() * (18 * intensity);
+  const distance = (80 + Math.random() * (18 * intensity)) * spread;
   const driftX = Math.cos(angle) * distance;
   const driftY = Math.sin(angle) * distance - (20 + Math.random() * (10 * intensity));
+  const midX = originX + driftX * (0.38 + Math.random() * 0.18);
+  const midY = originY + driftY * (0.35 + Math.random() * 0.22) - (18 + Math.random() * 40);
   const rotate = (-240 + Math.random() * 480).toFixed(0) + "deg";
-  const duration = Math.floor(700 + Math.random() * (45 * intensity)) + "ms";
+  const duration = Math.floor(680 + Math.random() * (45 * intensity)) + "ms";
   const scale = (0.85 + Math.random() * 1.4).toFixed(2);
   const fontSize = (18 + Math.random() * (1.6 * intensity)).toFixed(0) + "px";
 
   node.style.fontSize = fontSize;
   node.style.setProperty("--start-x", originX + "px");
   node.style.setProperty("--start-y", originY + "px");
+  node.style.setProperty("--mid-x", midX + "px");
+  node.style.setProperty("--mid-y", midY + "px");
   node.style.setProperty("--end-x", originX + driftX + "px");
   node.style.setProperty("--end-y", originY + driftY + "px");
   node.style.setProperty("--emoji-rotate", rotate);
@@ -240,17 +263,21 @@ function createFlyingEmoji(char, originX, originY, power) {
   emojiFxLayer.appendChild(node);
 }
 
-function burstEmoji(char, anchorEl) {
+function burstEmoji(char, anchorEl, profile) {
   const rect = anchorEl.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
-  const count = Math.max(6, Number(emojiBurstPower.value) || 12);
+  const activeProfile = profile || getEmojiProfile("");
+  const sliderCount = Math.max(6, Number(emojiBurstPower.value) || 12);
+  const count = Math.max(4, Math.round(sliderCount * (activeProfile.countScale || 1)));
 
   for (let i = 0; i < count; i += 1) {
     const jitterX = (Math.random() - 0.5) * 24;
     const jitterY = (Math.random() - 0.5) * 24;
-    createFlyingEmoji(char, centerX + jitterX, centerY + jitterY, count);
+    createFlyingEmoji(char, centerX + jitterX, centerY + jitterY, sliderCount, activeProfile);
   }
+
+  return { power: sliderCount, profile: activeProfile };
 }
 
 function handleEmojiPickerClick(event) {
@@ -260,13 +287,27 @@ function handleEmojiPickerClick(event) {
   const char = (button.textContent || "").trim();
   if (!char) return;
 
-  const power = Number(emojiBurstPower.value) || 12;
-  burstEmoji(char, button);
-  playEmojiBurstSound(power);
+  const label = (button.getAttribute("aria-label") || "").trim();
+  const profile = getEmojiProfile(label);
+  const result = burstEmoji(char, button, profile);
+  playEmojiBurstSound(result.power, result.profile);
 }
 
 function updateEmojiBurstLabel() {
   emojiBurstValue.textContent = String(emojiBurstPower.value);
+}
+
+function getNoiseBuffer(ctx) {
+  if (emojiNoiseBuffer) return emojiNoiseBuffer;
+
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i += 1) {
+    data[i] = Math.random() * 2 - 1;
+  }
+
+  emojiNoiseBuffer = buffer;
+  return buffer;
 }
 
 function getEmojiAudioContext() {
@@ -278,7 +319,7 @@ function getEmojiAudioContext() {
   return emojiAudioContext;
 }
 
-function playEmojiBurstSound(power) {
+function playEmojiBurstSound(power, profile) {
   if (!emojiSoundToggle.checked) return;
 
   const ctx = getEmojiAudioContext();
@@ -290,22 +331,98 @@ function playEmojiBurstSound(power) {
 
   const now = ctx.currentTime;
   const intensity = Math.max(6, Number(power) || 12);
+  const soundType = profile?.sound || "chime";
 
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(0.0001, now);
+  master.gain.exponentialRampToValueAtTime(0.055 + intensity * 0.0018, now + 0.02);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+  master.connect(ctx.destination);
 
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(280 + intensity * 12, now);
-  osc.frequency.exponentialRampToValueAtTime(180 + intensity * 6, now + 0.12);
+  function tone(type, f1, f2, duration, detune) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(f1, now);
+    if (f2) {
+      osc.frequency.exponentialRampToValueAtTime(Math.max(40, f2), now + duration);
+    }
+    if (detune) {
+      osc.detune.setValueAtTime(detune, now);
+    }
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.65, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(now);
+    osc.stop(now + duration + 0.02);
+  }
 
-  gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.03, now + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+  function noiseBurst(duration, highpassHz) {
+    const src = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    src.buffer = getNoiseBuffer(ctx);
+    filter.type = "highpass";
+    filter.frequency.setValueAtTime(highpassHz, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.28, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(master);
+    src.start(now);
+    src.stop(now + duration + 0.02);
+  }
 
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(now);
-  osc.stop(now + 0.15);
+  switch (soundType) {
+    case "boom":
+      tone("sine", 180 + intensity * 5, 70, 0.2, 0);
+      tone("triangle", 95 + intensity * 2, 50, 0.22, -4);
+      noiseBurst(0.08, 900);
+      break;
+    case "spark":
+      tone("square", 1100 + intensity * 20, 450, 0.12, 0);
+      tone("triangle", 1400 + intensity * 30, 700, 0.09, 8);
+      noiseBurst(0.05, 2500);
+      break;
+    case "rocket":
+      tone("sawtooth", 260 + intensity * 8, 620 + intensity * 12, 0.18, 0);
+      tone("triangle", 180, 90, 0.2, -7);
+      break;
+    case "warm":
+      tone("sine", 420, 260, 0.18, 0);
+      tone("triangle", 520, 310, 0.16, 3);
+      break;
+    case "flare":
+      tone("sawtooth", 500 + intensity * 10, 260, 0.16, 0);
+      noiseBurst(0.06, 1800);
+      break;
+    case "party":
+      tone("triangle", 760, 520, 0.1, 0);
+      tone("square", 980, 740, 0.08, 10);
+      tone("triangle", 640, 420, 0.12, -8);
+      break;
+    case "confetti":
+      tone("triangle", 900, 700, 0.08, 0);
+      tone("sine", 1200, 840, 0.07, 6);
+      noiseBurst(0.04, 2200);
+      break;
+    case "rainbow":
+      tone("sine", 520, 780, 0.1, 0);
+      tone("triangle", 660, 980, 0.14, 4);
+      break;
+    case "cool":
+      tone("triangle", 430, 240, 0.16, 0);
+      tone("sine", 680, 380, 0.12, -6);
+      break;
+    case "chime":
+    default:
+      tone("triangle", 720 + intensity * 8, 460, 0.14, 0);
+      tone("sine", 960 + intensity * 10, 620, 0.1, 6);
+      break;
+  }
 }
 function handleKeyboard(event) {
   if (event.ctrlKey || event.metaKey || event.altKey) return;
@@ -435,6 +552,8 @@ setEmojiOpen(false);
 updateEmojiBurstLabel();
 updateClock();
 setInterval(updateClock, 1000);
+
+
 
 
 

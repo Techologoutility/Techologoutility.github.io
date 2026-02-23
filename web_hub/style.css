@@ -766,3 +766,90 @@ body {
   }
 }
 
+
+/* Emoji animation variants */
+.flying-emoji.fx-bounce { animation-name: emojiBounce; }
+.flying-emoji.fx-wave { animation-name: emojiWave; }
+.flying-emoji.fx-pop { animation-name: emojiPopBurst; }
+.flying-emoji.fx-flare { animation-name: emojiFlare; }
+.flying-emoji.fx-spark { animation-name: emojiSpark; }
+.flying-emoji.fx-boom { animation-name: emojiBoom; }
+.flying-emoji.fx-heart { animation-name: emojiHeart; }
+.flying-emoji.fx-rocket { animation-name: emojiRocket; }
+.flying-emoji.fx-party { animation-name: emojiParty; }
+.flying-emoji.fx-rainbow { animation-name: emojiRainbow; }
+
+@keyframes emojiBounce {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.6); opacity: 0; }
+  15% { opacity: 1; }
+  45% { transform: translate3d(var(--mid-x), calc(var(--mid-y) - 14px), 0) scale(1.05) rotate(35deg); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.1)) rotate(var(--emoji-rotate,120deg)); opacity: 0; }
+}
+
+@keyframes emojiWave {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.7) rotate(0deg); opacity: 0; }
+  12% { opacity: 1; }
+  35% { transform: translate3d(calc(var(--mid-x) - 16px), calc(var(--mid-y) + 8px), 0) scale(1.0) rotate(-25deg); }
+  70% { transform: translate3d(calc(var(--mid-x) + 18px), calc(var(--mid-y) - 10px), 0) scale(1.1) rotate(30deg); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.2)) rotate(var(--emoji-rotate,160deg)); opacity: 0; }
+}
+
+@keyframes emojiPopBurst {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.25); opacity: 0; }
+  8% { opacity: 1; }
+  20% { transform: translate3d(calc(var(--start-x) - 2px), calc(var(--start-y) - 3px), 0) scale(1.35) rotate(-8deg); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.25)) rotate(var(--emoji-rotate,140deg)); opacity: 0; }
+}
+
+@keyframes emojiFlare {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.5); opacity: 0; filter: saturate(1); }
+  12% { opacity: 1; }
+  38% { transform: translate3d(var(--mid-x), calc(var(--mid-y) - 12px), 0) scale(1.3) rotate(15deg); filter: saturate(1.5); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.15)) rotate(var(--emoji-rotate,160deg)); opacity: 0; filter: saturate(.9); }
+}
+
+@keyframes emojiSpark {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.4) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  25% { transform: translate3d(calc(var(--mid-x) - 10px), calc(var(--mid-y) - 16px), 0) scale(.95) rotate(45deg); }
+  55% { transform: translate3d(calc(var(--mid-x) + 12px), calc(var(--mid-y) + 4px), 0) scale(1.15) rotate(-35deg); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.05)) rotate(var(--emoji-rotate,220deg)); opacity: 0; }
+}
+
+@keyframes emojiBoom {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.2); opacity: 0; }
+  7% { opacity: 1; }
+  18% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(1.6) rotate(-14deg); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.35)) rotate(var(--emoji-rotate,180deg)); opacity: 0; }
+}
+
+@keyframes emojiHeart {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.55); opacity: 0; }
+  12% { opacity: 1; }
+  35% { transform: translate3d(calc(var(--mid-x) - 12px), calc(var(--mid-y) - 8px), 0) scale(1.05) rotate(-10deg); }
+  65% { transform: translate3d(calc(var(--mid-x) + 10px), calc(var(--mid-y) - 18px), 0) scale(1.15) rotate(8deg); }
+  100% { transform: translate3d(var(--end-x), calc(var(--end-y) - 10px), 0) scale(var(--emoji-scale,1.1)) rotate(var(--emoji-rotate,90deg)); opacity: 0; }
+}
+
+@keyframes emojiRocket {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.65) rotate(-20deg); opacity: 0; }
+  10% { opacity: 1; }
+  45% { transform: translate3d(calc(var(--mid-x) + 20px), calc(var(--mid-y) - 26px), 0) scale(1.15) rotate(-8deg); }
+  100% { transform: translate3d(var(--end-x), calc(var(--end-y) - 36px), 0) scale(var(--emoji-scale,1.2)) rotate(var(--emoji-rotate,60deg)); opacity: 0; }
+}
+
+@keyframes emojiParty {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.45); opacity: 0; }
+  10% { opacity: 1; }
+  30% { transform: translate3d(calc(var(--mid-x) - 16px), calc(var(--mid-y) + 6px), 0) scale(1.05) rotate(-30deg); }
+  60% { transform: translate3d(calc(var(--mid-x) + 14px), calc(var(--mid-y) - 10px), 0) scale(1.2) rotate(25deg); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.25)) rotate(var(--emoji-rotate,240deg)); opacity: 0; }
+}
+
+@keyframes emojiRainbow {
+  0% { transform: translate3d(var(--start-x), var(--start-y), 0) scale(.55); opacity: 0; }
+  10% { opacity: 1; }
+  35% { transform: translate3d(calc(var(--mid-x) - 24px), calc(var(--mid-y) - 4px), 0) scale(1.05) rotate(-20deg); }
+  70% { transform: translate3d(calc(var(--mid-x) + 22px), calc(var(--mid-y) - 18px), 0) scale(1.15) rotate(20deg); }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) scale(var(--emoji-scale,1.2)) rotate(var(--emoji-rotate,150deg)); opacity: 0; }
+}
