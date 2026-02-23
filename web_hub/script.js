@@ -256,6 +256,7 @@ copyFeedbackBtn.addEventListener("click", copyFeedbackDraft);
 year.textContent = new Date().getFullYear();
 resetCalculator();
 setCalculatorOpen(false);
-maybeOpenCalculatorFromHash();
 updateClock();
 setInterval(updateClock, 1000);
+
+
