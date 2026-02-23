@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jatin Utility Hub | Clock, Calculator & More</title>
-  <meta name="description" content="Jatin Utility Hub is a personal tools website with a live clock, calculator, and space to add more utilities." />
+  <title>Utility Hub | Clock, Calculator & More</title>
+  <meta name="description" content="Utility Hub is a personal tools website with a live clock, calculator, emoji playground, and space to add more utilities." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -21,6 +21,7 @@
       <a href="#clock">Clock</a>
       <a href="#calculator">Calculator</a>
       <a href="#workspace">More Tools</a>
+      <a href="#emoji-playground">Emoji Fun</a>
       <a href="#feedback">Feedback</a>
     </nav>
   </header>
@@ -114,6 +115,34 @@
       <p class="tip" id="ideaTip" hidden>Tip: Start with one feature at a time, like a stopwatch or to-do list, and I will add it here.</p>
     </section>
 
+    <section class="panel emoji-panel is-collapsed" id="emoji-playground" aria-labelledby="emoji-title">
+      <div class="panel-head">
+        <h2 id="emoji-title">Emoji Playground</h2>
+        <div class="emoji-head-actions">
+          <button class="ghost-btn" id="toggleEmojiBtn" type="button" aria-expanded="false" aria-controls="emojiContent">Show Emoji Fun</button>
+        </div>
+      </div>
+
+      <p class="hint emoji-closed-hint" id="emojiClosedHint">Emoji fun is hidden by default. Click <strong>Show Emoji Fun</strong> to play.</p>
+
+      <div id="emojiContent" class="emoji-content" hidden>
+        <p class="emoji-intro">Tap any emoji button and watch it burst and float across the screen.</p>
+        <div class="emoji-picker" role="group" aria-label="Emoji launcher buttons">
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Smile">??</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Cool face">??</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Party face">??</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Fire">??</button>
+          <button type="button" class="emoji-btn" data-emoji="?" aria-label="Sparkles">?</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Boom">??</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Heart">??</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Rocket">??</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Party popper">??</button>
+          <button type="button" class="emoji-btn" data-emoji="??" aria-label="Rainbow">??</button>
+        </div>
+        <p class="hint">Tip: Tap different emojis quickly to create a playful screen effect.</p>
+      </div>
+    </section>
+
     <section class="panel feedback-panel" id="feedback" aria-labelledby="feedback-title">
       <div class="panel-head">
         <h2 id="feedback-title">Share Feedback & Feature Requests</h2>
@@ -180,7 +209,7 @@
     <p>Built by Jatin • <span id="year"></span></p>
   </footer>
 
+  <div id="emojiFxLayer" class="emoji-fx-layer" aria-hidden="true"></div>
   <script src="script.js"></script>
 </body>
 </html>
-
