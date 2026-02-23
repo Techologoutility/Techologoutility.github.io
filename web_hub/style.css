@@ -625,32 +625,84 @@ body {
 
 
 
-.india-clock {
+.extra-clock-panel {
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid var(--line);
 }
 
-.india-clock-label {
-  margin: 0 0 4px;
+.extra-clock-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.extra-clock-title {
+  margin: 0;
   color: var(--accent-2);
   font-weight: 700;
   font-size: 0.9rem;
 }
 
-.india-clock-date {
+.extra-clock-content {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.extra-clock-content[hidden] {
+  display: none !important;
+}
+
+.extra-clock-field {
+  max-width: 320px;
+}
+
+.extra-clock-field span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.extra-clock-field select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(5, 8, 16, 0.78);
+  color: var(--text);
+  font: inherit;
+}
+
+.extra-clock-field select:focus {
+  outline: 2px solid rgba(83, 241, 200, 0.28);
+  outline-offset: 1px;
+  border-color: rgba(83, 241, 200, 0.35);
+}
+
+.extra-clock-date {
   margin: 0;
   color: var(--muted);
   font-size: 0.88rem;
 }
 
-.india-clock-time {
-  margin: 4px 0 0;
+.extra-clock-time {
+  margin: 0;
   font-family: Consolas, "Courier New", monospace;
   font-size: clamp(1.1rem, 2.6vw, 1.5rem);
   color: #cfe2ff;
 }
 
+.extra-clock-zone {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.extra-clock-hint {
+  margin-top: 8px;
+}
 .emoji-controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -713,3 +765,4 @@ body {
     text-align: left;
   }
 }
+

@@ -38,10 +38,25 @@
         <span id="clockZone">Local Time</span>
       </div>
 
-      <div class="india-clock" aria-labelledby="indiaClockLabel">
-        <p class="india-clock-label" id="indiaClockLabel">India Time (IST)</p>
-        <p class="india-clock-date" id="indiaClockDate">Loading India date...</p>
-        <p class="india-clock-time" id="indiaClockTime">00:00:00</p>
+      <div class="extra-clock-panel is-collapsed" id="extraClockPanel">
+        <div class="extra-clock-head">
+          <p class="extra-clock-title">World Time</p>
+          <button class="ghost-btn" id="toggleExtraClockBtn" type="button" aria-expanded="false" aria-controls="extraClockContent">Show Extra Time</button>
+        </div>
+        <p class="hint extra-clock-hint" id="extraClockHint">Hidden by default. Open and choose India or Germany time.</p>
+
+        <div id="extraClockContent" class="extra-clock-content" hidden>
+          <label class="field extra-clock-field" for="extraClockRegion">
+            <span>Select country</span>
+            <select id="extraClockRegion">
+              <option value="Asia/Kolkata" selected>India (IST)</option>
+              <option value="Europe/Berlin">Germany (Berlin)</option>
+            </select>
+          </label>
+          <p class="extra-clock-date" id="extraClockDate">Loading selected date...</p>
+          <p class="extra-clock-time" id="extraClockTime">00:00:00</p>
+          <p class="extra-clock-zone" id="extraClockZone">Timezone: Asia/Kolkata</p>
+        </div>
       </div>
     </section>
 
@@ -230,6 +245,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
