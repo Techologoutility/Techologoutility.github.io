@@ -7,6 +7,7 @@ const hourHand = document.getElementById("hourHand");
 const minuteHand = document.getElementById("minuteHand");
 const secondHand = document.getElementById("secondHand");
 const year = document.getElementById("year");
+const themeSelect = document.getElementById("themeSelect");
 const display = document.getElementById("calcDisplay");
 const clearAllBtn = document.getElementById("clearAllBtn");
 const ideaBtn = document.getElementById("ideaBtn");
@@ -53,6 +54,32 @@ function getEmojiProfile(label) {
   return EMOJI_PROFILES[label] || { animationClass: "fx-bounce", sound: "chime", spread: 1.0, countScale: 1.0 };
 }
 
+function applyTheme(themeName) {
+  const safeTheme = themeName || "default";
+  if (safeTheme === "default") {
+    document.body.removeAttribute("data-theme");
+  } else {
+    document.body.setAttribute("data-theme", safeTheme);
+  }
+  try {
+    localStorage.setItem("utilityHubTheme", safeTheme);
+  } catch {}
+}
+
+function initializeTheme() {
+  let savedTheme = "default";
+  try {
+    savedTheme = localStorage.getItem("utilityHubTheme") || "default";
+  } catch {}
+
+  const available = Array.from(themeSelect.options).map((opt) => opt.value);
+  if (!available.includes(savedTheme)) {
+    savedTheme = "default";
+  }
+
+  themeSelect.value = savedTheme;
+  applyTheme(savedTheme);
+}
 function updateClock() {
   const now = new Date();
   const selectedValue = clockRegionSelect?.value || "local";
@@ -512,11 +539,11 @@ document.querySelector(".calc-grid").addEventListener("click", handleButtonClick
 document.querySelector(".emoji-picker").addEventListener("click", handleEmojiPickerClick);
 clearAllBtn.addEventListener("click", resetCalculator);
 toggleCalculatorBtn.addEventListener("click", () => setCalculatorOpen(!isCalculatorOpen));
-toggleExtraClockBtn.addEventListener("click", () => setExtraClockOpen(!isExtraClockOpen));
-extraClockRegion.addEventListener("change", updateClock);
+clockRegionSelect.addEventListener("change", updateClock);
 toggleEmojiBtn.addEventListener("click", () => setEmojiOpen(!isEmojiOpen));
 emojiBurstPower.addEventListener("input", updateEmojiBurstLabel);
 document.addEventListener("keydown", handleKeyboard);
+themeSelect.addEventListener("change", (event) => applyTheme(event.target.value));
 window.addEventListener("hashchange", maybeOpenCalculatorFromHash);
 window.addEventListener("hashchange", maybeOpenEmojiFromHash);
 ideaBtn.addEventListener("click", toggleTip);
@@ -524,12 +551,15 @@ feedbackForm.addEventListener("submit", openGitHubFeedbackIssue);
 copyFeedbackBtn.addEventListener("click", copyFeedbackDraft);
 
 year.textContent = new Date().getFullYear();
+initializeTheme();
 resetCalculator();
 setCalculatorOpen(false);
 setEmojiOpen(false);
 updateEmojiBurstLabel();
 updateClock();
 setInterval(updateClock, 250);
+
+
 
 
 
