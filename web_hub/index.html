@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jatin Utility Hub | Clock, Calculator & More</title>
+  <meta name="description" content="Jatin Utility Hub is a personal tools website with a live clock, calculator, and space to add more utilities." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Jatin's Web App</p>
+      <h1>Jatin Utility Hub</h1>
+      <p class="hero-text">A starter website with a live clock, calculator, and space to add more tools later.</p>
+    </div>
+    <nav class="quick-nav" aria-label="Quick sections">
+      <a href="#clock">Clock</a>
+      <a href="#calculator">Calculator</a>
+      <a href="#workspace">More Tools</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="panel clock-panel" id="clock" aria-labelledby="clock-title">
+      <div class="panel-head">
+        <h2 id="clock-title">Live Clock</h2>
+        <span class="badge">Running</span>
+      </div>
+      <p class="clock-date" id="clockDate">Loading date...</p>
+      <p class="clock-time" id="clockTime" aria-live="polite">00:00:00</p>
+      <div class="clock-meta">
+        <span id="clockZone">Local Time</span>
+      </div>
+    </section>
+
+    <section class="panel calc-panel" id="calculator" aria-labelledby="calc-title">
+      <div class="panel-head">
+        <h2 id="calc-title">Calculator</h2>
+        <button class="ghost-btn" id="clearAllBtn" type="button">Clear</button>
+      </div>
+
+      <label class="sr-only" for="calcDisplay">Calculator display</label>
+      <input id="calcDisplay" class="calc-display" type="text" value="0" inputmode="decimal" readonly />
+
+      <div class="calc-grid" role="group" aria-label="Calculator buttons">
+        <button type="button" data-action="clear">AC</button>
+        <button type="button" data-action="delete">DEL</button>
+        <button type="button" data-value="(">(</button>
+        <button type="button" data-value=")">)</button>
+
+        <button type="button" data-value="7">7</button>
+        <button type="button" data-value="8">8</button>
+        <button type="button" data-value="9">9</button>
+        <button type="button" data-value="/" class="op">/</button>
+
+        <button type="button" data-value="4">4</button>
+        <button type="button" data-value="5">5</button>
+        <button type="button" data-value="6">6</button>
+        <button type="button" data-value="*" class="op">*</button>
+
+        <button type="button" data-value="1">1</button>
+        <button type="button" data-value="2">2</button>
+        <button type="button" data-value="3">3</button>
+        <button type="button" data-value="-" class="op">-</button>
+
+        <button type="button" data-value="0" class="span-2">0</button>
+        <button type="button" data-value=".">.</button>
+        <button type="button" data-value="+" class="op">+</button>
+
+        <button type="button" data-action="equals" class="equals span-4">=</button>
+      </div>
+      <p class="hint">Keyboard support: numbers, + - * /, Enter, Backspace</p>
+    </section>
+
+    <section class="panel workspace-panel" id="workspace" aria-labelledby="workspace-title">
+      <div class="panel-head">
+        <h2 id="workspace-title">Add More Tools Later</h2>
+        <span class="badge badge-alt">Extensible</span>
+      </div>
+      <div class="tool-grid">
+        <article class="tool-card">
+          <h3>To-Do List</h3>
+          <p>Add a task manager for your daily work.</p>
+          <button type="button" class="tool-btn" disabled>Coming Next</button>
+        </article>
+        <article class="tool-card">
+          <h3>Notes</h3>
+          <p>Save quick ideas or study notes in the browser.</p>
+          <button type="button" class="tool-btn" disabled>Coming Next</button>
+        </article>
+        <article class="tool-card">
+          <h3>Stopwatch</h3>
+          <p>Track time for practice, coding, or workouts.</p>
+          <button type="button" class="tool-btn" disabled>Coming Next</button>
+        </article>
+        <article class="tool-card highlight">
+          <h3>Your Next Feature</h3>
+          <p>Tell me what you want, and I can add it into this website structure.</p>
+          <button type="button" class="tool-btn" id="ideaBtn">Show Tip</button>
+        </article>
+      </div>
+      <p class="tip" id="ideaTip" hidden>Tip: Start with one feature at a time, like a stopwatch or to-do list, and I will add it here.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built by Jatin • <span id="year"></span></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
