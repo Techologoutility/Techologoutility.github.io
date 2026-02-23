@@ -1,14 +1,11 @@
 const clockTime = document.getElementById("clockTime");
 const clockDate = document.getElementById("clockDate");
 const clockZone = document.getElementById("clockZone");
-const extraClockPanel = document.getElementById("extraClockPanel");
-const toggleExtraClockBtn = document.getElementById("toggleExtraClockBtn");
-const extraClockHint = document.getElementById("extraClockHint");
-const extraClockContent = document.getElementById("extraClockContent");
-const extraClockRegion = document.getElementById("extraClockRegion");
-const extraClockDate = document.getElementById("extraClockDate");
-const extraClockTime = document.getElementById("extraClockTime");
-const extraClockZone = document.getElementById("extraClockZone");
+const clockRegionLabel = document.getElementById("clockRegionLabel");
+const clockRegionSelect = document.getElementById("clockRegionSelect");
+const hourHand = document.getElementById("hourHand");
+const minuteHand = document.getElementById("minuteHand");
+const secondHand = document.getElementById("secondHand");
 const year = document.getElementById("year");
 const display = document.getElementById("calcDisplay");
 const clearAllBtn = document.getElementById("clearAllBtn");
@@ -36,7 +33,6 @@ let expression = "0";
 let showFreshInput = false;
 let isCalculatorOpen = false;
 let isEmojiOpen = false;
-let isExtraClockOpen = false;
 let emojiAudioContext = null;
 let emojiNoiseBuffer = null;
 
@@ -59,44 +55,53 @@ function getEmojiProfile(label) {
 
 function updateClock() {
   const now = new Date();
+  const selectedValue = clockRegionSelect?.value || "local";
+  const selectedOption = clockRegionSelect?.options?.[clockRegionSelect.selectedIndex] || null;
+  const selectedLabel = selectedOption ? selectedOption.text : "My Local Time";
+  const selectedLocale = (selectedOption && selectedOption.dataset && selectedOption.dataset.locale) ? selectedOption.dataset.locale : "en-US";
+  const timeZone = selectedValue === "local" ? undefined : selectedValue;
 
-  clockTime.textContent = new Intl.DateTimeFormat([], {
+  const timeParts = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(now);
+
+  const getPart = (type) => Number(timeParts.find((p) => p.type === type)?.value || 0);
+  const hour24 = getPart("hour");
+  const minute = getPart("minute");
+  const second = getPart("second");
+
+  const hourAngle = ((hour24 % 12) + minute / 60 + second / 3600) * 30;
+  const minuteAngle = (minute + second / 60) * 6;
+  const secondAngle = second * 6;
+
+  hourHand.style.transform = "translateX(-50%) rotate(" + hourAngle + "deg)";
+  minuteHand.style.transform = "translateX(-50%) rotate(" + minuteAngle + "deg)";
+  secondHand.style.transform = "translateX(-50%) rotate(" + secondAngle + "deg)";
+
+  clockTime.textContent = new Intl.DateTimeFormat(selectedLocale, {
+    timeZone,
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hour12: true,
   }).format(now);
 
-  clockDate.textContent = new Intl.DateTimeFormat([], {
+  clockDate.textContent = new Intl.DateTimeFormat(selectedLocale, {
+    timeZone,
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   }).format(now);
 
-  const selectedZone = extraClockRegion.value || "Asia/Kolkata";
-  const regionLabel = extraClockRegion.options[extraClockRegion.selectedIndex]?.text || selectedZone;
-
-  extraClockTime.textContent = new Intl.DateTimeFormat(selectedZone === "Asia/Kolkata" ? "en-IN" : "de-DE", {
-    timeZone: selectedZone,
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  }).format(now);
-
-  extraClockDate.textContent = new Intl.DateTimeFormat(selectedZone === "Asia/Kolkata" ? "en-IN" : "de-DE", {
-    timeZone: selectedZone,
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(now);
-
-  extraClockZone.textContent = "Timezone: " + selectedZone + " | " + regionLabel;
-
-  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  clockZone.textContent = zone ? "Timezone: " + zone : "Local Time";
+  const resolvedLocalZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const zoneText = selectedValue === "local" ? (resolvedLocalZone || "Local Time") : selectedValue;
+  clockZone.textContent = "Timezone: " + zoneText;
+  clockRegionLabel.textContent = selectedLabel;
 }
 
 function renderDisplay() {
@@ -196,32 +201,6 @@ function maybeOpenCalculatorFromHash() {
   if (window.location.hash === "#calculator") {
     setCalculatorOpen(true);
   }
-}
-
-function setExtraClockOpen(shouldOpen) {
-  isExtraClockOpen = Boolean(shouldOpen);
-  extraClockContent.hidden = !isExtraClockOpen;
-  extraClockPanel.classList.toggle("is-collapsed", !isExtraClockOpen);
-  extraClockHint.hidden = isExtraClockOpen;
-  toggleExtraClockBtn.setAttribute("aria-expanded", String(isExtraClockOpen));
-  toggleExtraClockBtn.textContent = isExtraClockOpen ? "Hide Extra Time" : "Show Extra Time";
-}
-
-function maybeOpenExtraClockFromHash() {
-  if (window.location.hash === "#clock") {
-    return;
-  }
-  if (window.location.hash === "#extra-time") {
-    setExtraClockOpen(true);
-  }
-}
-function setEmojiOpen(shouldOpen) {
-  isEmojiOpen = Boolean(shouldOpen);
-  emojiContent.hidden = !isEmojiOpen;
-  emojiSection.classList.toggle("is-collapsed", !isEmojiOpen);
-  emojiClosedHint.hidden = isEmojiOpen;
-  toggleEmojiBtn.setAttribute("aria-expanded", String(isEmojiOpen));
-  toggleEmojiBtn.textContent = isEmojiOpen ? "Hide Emoji Fun" : "Show Emoji Fun";
 }
 
 function maybeOpenEmojiFromHash() {
@@ -539,7 +518,6 @@ toggleEmojiBtn.addEventListener("click", () => setEmojiOpen(!isEmojiOpen));
 emojiBurstPower.addEventListener("input", updateEmojiBurstLabel);
 document.addEventListener("keydown", handleKeyboard);
 window.addEventListener("hashchange", maybeOpenCalculatorFromHash);
-window.addEventListener("hashchange", maybeOpenExtraClockFromHash);
 window.addEventListener("hashchange", maybeOpenEmojiFromHash);
 ideaBtn.addEventListener("click", toggleTip);
 feedbackForm.addEventListener("submit", openGitHubFeedbackIssue);
@@ -551,7 +529,8 @@ setCalculatorOpen(false);
 setEmojiOpen(false);
 updateEmojiBurstLabel();
 updateClock();
-setInterval(updateClock, 1000);
+setInterval(updateClock, 250);
+
 
 
 

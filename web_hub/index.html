@@ -29,34 +29,49 @@
   <main class="layout">
     <section class="panel clock-panel" id="clock" aria-labelledby="clock-title">
       <div class="panel-head">
-        <h2 id="clock-title">Live Clock</h2>
-        <span class="badge">Running</span>
+        <h2 id="clock-title">World Round Clock</h2>
+        <span class="badge">Live</span>
       </div>
+
+      <label class="field clock-region-field" for="clockRegionSelect">
+        <span>Select country / timezone</span>
+        <select id="clockRegionSelect">
+          <option value="local" data-locale="en-US" selected>My Local Time</option>
+          <option value="Asia/Kolkata" data-locale="en-IN">India (IST)</option>
+          <option value="Europe/Berlin" data-locale="de-DE">Germany (Berlin)</option>
+          <option value="Europe/London" data-locale="en-GB">UK (London)</option>
+          <option value="America/New_York" data-locale="en-US">USA (New York)</option>
+          <option value="Asia/Dubai" data-locale="en-AE">UAE (Dubai)</option>
+        </select>
+      </label>
+
+      <div class="analog-clock-wrap">
+        <div class="analog-clock" aria-label="Analog clock display">
+          <div class="analog-ticks"></div>
+          <span class="clock-number n12">12</span>
+          <span class="clock-number n1">1</span>
+          <span class="clock-number n2">2</span>
+          <span class="clock-number n3">3</span>
+          <span class="clock-number n4">4</span>
+          <span class="clock-number n5">5</span>
+          <span class="clock-number n6">6</span>
+          <span class="clock-number n7">7</span>
+          <span class="clock-number n8">8</span>
+          <span class="clock-number n9">9</span>
+          <span class="clock-number n10">10</span>
+          <span class="clock-number n11">11</span>
+          <div class="clock-hand hour-hand" id="hourHand"></div>
+          <div class="clock-hand minute-hand" id="minuteHand"></div>
+          <div class="clock-hand second-hand" id="secondHand"></div>
+          <div class="clock-center-dot"></div>
+        </div>
+      </div>
+
       <p class="clock-date" id="clockDate">Loading date...</p>
       <p class="clock-time" id="clockTime" aria-live="polite">00:00:00</p>
       <div class="clock-meta">
-        <span id="clockZone">Local Time</span>
-      </div>
-
-      <div class="extra-clock-panel is-collapsed" id="extraClockPanel">
-        <div class="extra-clock-head">
-          <p class="extra-clock-title">World Time</p>
-          <button class="ghost-btn" id="toggleExtraClockBtn" type="button" aria-expanded="false" aria-controls="extraClockContent">Show Extra Time</button>
-        </div>
-        <p class="hint extra-clock-hint" id="extraClockHint">Hidden by default. Open and choose India or Germany time.</p>
-
-        <div id="extraClockContent" class="extra-clock-content" hidden>
-          <label class="field extra-clock-field" for="extraClockRegion">
-            <span>Select country</span>
-            <select id="extraClockRegion">
-              <option value="Asia/Kolkata" selected>India (IST)</option>
-              <option value="Europe/Berlin">Germany (Berlin)</option>
-            </select>
-          </label>
-          <p class="extra-clock-date" id="extraClockDate">Loading selected date...</p>
-          <p class="extra-clock-time" id="extraClockTime">00:00:00</p>
-          <p class="extra-clock-zone" id="extraClockZone">Timezone: Asia/Kolkata</p>
-        </div>
+        <span id="clockZone">Timezone: local</span>
+        <span id="clockRegionLabel">My Local Time</span>
       </div>
     </section>
 
@@ -245,6 +260,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
