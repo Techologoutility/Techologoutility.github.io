@@ -523,3 +523,8 @@ body {
   }
 }
 
+
+.calculator-content[hidden] {
+  display: none !important;
+}
+
