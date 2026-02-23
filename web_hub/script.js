@@ -36,6 +36,7 @@ let isCalculatorOpen = false;
 let isEmojiOpen = false;
 let emojiAudioContext = null;
 let emojiNoiseBuffer = null;
+let clockIntervalId = null;
 
 const EMOJI_PROFILES = {
   "Smile": { animationClass: "fx-bounce", sound: "chime", spread: 1.0, countScale: 1.0 },
@@ -81,11 +82,15 @@ function initializeTheme() {
   applyTheme(savedTheme);
 }
 function updateClock() {
+  if (!clockTime || !clockDate || !clockZone || !clockRegionSelect || !hourHand || !minuteHand || !secondHand) {
+    return;
+  }
+
   const now = new Date();
-  const selectedValue = clockRegionSelect?.value || "local";
-  const selectedOption = clockRegionSelect?.options?.[clockRegionSelect.selectedIndex] || null;
+  const selectedValue = clockRegionSelect.value || "local";
+  const selectedOption = clockRegionSelect.options[clockRegionSelect.selectedIndex] || null;
   const selectedLabel = selectedOption ? selectedOption.text : "My Local Time";
-  const selectedLocale = (selectedOption && selectedOption.dataset && selectedOption.dataset.locale) ? selectedOption.dataset.locale : "en-US";
+  const selectedLocale = selectedOption?.dataset?.locale || "en-US";
   const timeZone = selectedValue === "local" ? undefined : selectedValue;
 
   const timeParts = new Intl.DateTimeFormat("en-GB", {
@@ -100,10 +105,11 @@ function updateClock() {
   const hour24 = getPart("hour");
   const minute = getPart("minute");
   const second = getPart("second");
+  const ms = now.getMilliseconds();
 
   const hourAngle = ((hour24 % 12) + minute / 60 + second / 3600) * 30;
-  const minuteAngle = (minute + second / 60) * 6;
-  const secondAngle = second * 6;
+  const minuteAngle = (minute + second / 60 + ms / 60000) * 6;
+  const secondAngle = (second + ms / 1000) * 6;
 
   hourHand.style.transform = "translateX(-50%) rotate(" + hourAngle + "deg)";
   minuteHand.style.transform = "translateX(-50%) rotate(" + minuteAngle + "deg)";
@@ -131,6 +137,18 @@ function updateClock() {
   clockRegionLabel.textContent = selectedLabel;
 }
 
+function startClockTicker() {
+  if (clockIntervalId) {
+    clearInterval(clockIntervalId);
+  }
+
+  updateClock();
+  clockIntervalId = setInterval(() => {
+    try {
+      updateClock();
+    } catch {}
+  }, 250);
+}
 function renderDisplay() {
   display.value = expression || "0";
 }
@@ -539,13 +557,14 @@ document.querySelector(".calc-grid").addEventListener("click", handleButtonClick
 document.querySelector(".emoji-picker").addEventListener("click", handleEmojiPickerClick);
 clearAllBtn.addEventListener("click", resetCalculator);
 toggleCalculatorBtn.addEventListener("click", () => setCalculatorOpen(!isCalculatorOpen));
-clockRegionSelect.addEventListener("change", updateClock);
+clockRegionSelect.addEventListener("change", () => { updateClock(); startClockTicker(); });
 toggleEmojiBtn.addEventListener("click", () => setEmojiOpen(!isEmojiOpen));
 emojiBurstPower.addEventListener("input", updateEmojiBurstLabel);
 document.addEventListener("keydown", handleKeyboard);
 themeSelect.addEventListener("change", (event) => applyTheme(event.target.value));
 window.addEventListener("hashchange", maybeOpenCalculatorFromHash);
 window.addEventListener("hashchange", maybeOpenEmojiFromHash);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) updateClock(); });
 ideaBtn.addEventListener("click", toggleTip);
 feedbackForm.addEventListener("submit", openGitHubFeedbackIssue);
 copyFeedbackBtn.addEventListener("click", copyFeedbackDraft);
@@ -556,8 +575,8 @@ resetCalculator();
 setCalculatorOpen(false);
 setEmojiOpen(false);
 updateEmojiBurstLabel();
-updateClock();
-setInterval(updateClock, 250);
+startClockTicker();
+
 
 
 

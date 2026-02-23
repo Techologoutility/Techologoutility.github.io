@@ -954,33 +954,44 @@ body {
 }
 
 .clock-number {
+  --angle: 0;
+  --radius: 124;
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 24px;
+  min-width: 24px;
   height: 24px;
-  margin: -12px;
   display: grid;
   place-items: center;
-  font-size: 0.9rem;
-  color: rgba(239, 244, 255, 0.85);
-  font-weight: 600;
+  font-size: 1rem;
+  color: rgba(239, 244, 255, 0.9);
+  font-weight: 700;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+  transform: translate(-50%, -50%) rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * -1px)) rotate(calc(var(--angle) * -1deg));
 }
 
-.n12 { transform: translate(-50%, -50%) translateY(-128px); }
-.n1 { transform: translate(-50%, -50%) translate(64px, -110px); }
-.n2 { transform: translate(-50%, -50%) translate(108px, -66px); }
-.n3 { transform: translate(-50%, -50%) translateX(128px); }
-.n4 { transform: translate(-50%, -50%) translate(108px, 66px); }
-.n5 { transform: translate(-50%, -50%) translate(64px, 110px); }
-.n6 { transform: translate(-50%, -50%) translateY(128px); }
-.n7 { transform: translate(-50%, -50%) translate(-64px, 110px); }
-.n8 { transform: translate(-50%, -50%) translate(-108px, 66px); }
-.n9 { transform: translate(-50%, -50%) translateX(-128px); }
-.n10 { transform: translate(-50%, -50%) translate(-108px, -66px); }
-.n11 { transform: translate(-50%, -50%) translate(-64px, -110px); }
+.clock-number.n12,
+.clock-number.n3,
+.clock-number.n6,
+.clock-number.n9 {
+  font-size: 1.1rem;
+  color: #ffffff;
+}
 
+.n12 { --angle: 0; }
+.n1 { --angle: 30; }
+.n2 { --angle: 60; }
+.n3 { --angle: 90; }
+.n4 { --angle: 120; }
+.n5 { --angle: 150; }
+.n6 { --angle: 180; }
+.n7 { --angle: 210; }
+.n8 { --angle: 240; }
+.n9 { --angle: 270; }
+.n10 { --angle: 300; }
+.n11 { --angle: 330; }
 .clock-hand {
+  transition: transform 0.15s linear;
   position: absolute;
   left: 50%;
   bottom: 50%;
@@ -1039,21 +1050,16 @@ body {
   }
 
   .clock-number {
-    font-size: 0.78rem;
+    --radius: 112;
+    font-size: 0.82rem;
   }
 
-  .n12 { transform: translate(-50%, -50%) translateY(-116px); }
-  .n1 { transform: translate(-50%, -50%) translate(58px, -100px); }
-  .n2 { transform: translate(-50%, -50%) translate(98px, -60px); }
-  .n3 { transform: translate(-50%, -50%) translateX(116px); }
-  .n4 { transform: translate(-50%, -50%) translate(98px, 60px); }
-  .n5 { transform: translate(-50%, -50%) translate(58px, 100px); }
-  .n6 { transform: translate(-50%, -50%) translateY(116px); }
-  .n7 { transform: translate(-50%, -50%) translate(-58px, 100px); }
-  .n8 { transform: translate(-50%, -50%) translate(-98px, 60px); }
-  .n9 { transform: translate(-50%, -50%) translateX(-116px); }
-  .n10 { transform: translate(-50%, -50%) translate(-98px, -60px); }
-  .n11 { transform: translate(-50%, -50%) translate(-58px, -100px); }
+  .clock-number.n12,
+  .clock-number.n3,
+  .clock-number.n6,
+  .clock-number.n9 {
+    font-size: 0.92rem;
+  }
 }
 
 body[data-theme="sunset"] {
@@ -1103,3 +1109,4 @@ body[data-theme="rose"] {
   --accent-2: #f4d27a;
   --warn: #ff8f70;
 }
+
