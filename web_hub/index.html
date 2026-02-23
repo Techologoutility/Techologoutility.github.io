@@ -21,6 +21,7 @@
       <a href="#clock">Clock</a>
       <a href="#calculator">Calculator</a>
       <a href="#workspace">More Tools</a>
+      <a href="#feedback">Feedback</a>
     </nav>
   </header>
 
@@ -37,43 +38,50 @@
       </div>
     </section>
 
-    <section class="panel calc-panel" id="calculator" aria-labelledby="calc-title">
+    <section class="panel calc-panel is-collapsed" id="calculator" aria-labelledby="calc-title">
       <div class="panel-head">
         <h2 id="calc-title">Calculator</h2>
-        <button class="ghost-btn" id="clearAllBtn" type="button">Clear</button>
+        <div class="calc-head-actions">
+          <button class="ghost-btn" id="toggleCalculatorBtn" type="button" aria-expanded="false" aria-controls="calculatorContent">Open Calculator</button>
+          <button class="ghost-btn" id="clearAllBtn" type="button">Clear</button>
+        </div>
       </div>
 
-      <label class="sr-only" for="calcDisplay">Calculator display</label>
-      <input id="calcDisplay" class="calc-display" type="text" value="0" inputmode="decimal" readonly />
+      <p class="hint calc-closed-hint" id="calcClosedHint">Calculator is hidden by default. Click <strong>Open Calculator</strong> to use it.</p>
 
-      <div class="calc-grid" role="group" aria-label="Calculator buttons">
-        <button type="button" data-action="clear">AC</button>
-        <button type="button" data-action="delete">DEL</button>
-        <button type="button" data-value="(">(</button>
-        <button type="button" data-value=")">)</button>
+      <div id="calculatorContent" class="calculator-content" hidden>
+        <label class="sr-only" for="calcDisplay">Calculator display</label>
+        <input id="calcDisplay" class="calc-display" type="text" value="0" inputmode="decimal" readonly />
 
-        <button type="button" data-value="7">7</button>
-        <button type="button" data-value="8">8</button>
-        <button type="button" data-value="9">9</button>
-        <button type="button" data-value="/" class="op">/</button>
+        <div class="calc-grid" role="group" aria-label="Calculator buttons">
+          <button type="button" data-action="clear">AC</button>
+          <button type="button" data-action="delete">DEL</button>
+          <button type="button" data-value="(">(</button>
+          <button type="button" data-value=")">)</button>
 
-        <button type="button" data-value="4">4</button>
-        <button type="button" data-value="5">5</button>
-        <button type="button" data-value="6">6</button>
-        <button type="button" data-value="*" class="op">*</button>
+          <button type="button" data-value="7">7</button>
+          <button type="button" data-value="8">8</button>
+          <button type="button" data-value="9">9</button>
+          <button type="button" data-value="/" class="op">/</button>
 
-        <button type="button" data-value="1">1</button>
-        <button type="button" data-value="2">2</button>
-        <button type="button" data-value="3">3</button>
-        <button type="button" data-value="-" class="op">-</button>
+          <button type="button" data-value="4">4</button>
+          <button type="button" data-value="5">5</button>
+          <button type="button" data-value="6">6</button>
+          <button type="button" data-value="*" class="op">*</button>
 
-        <button type="button" data-value="0" class="span-2">0</button>
-        <button type="button" data-value=".">.</button>
-        <button type="button" data-value="+" class="op">+</button>
+          <button type="button" data-value="1">1</button>
+          <button type="button" data-value="2">2</button>
+          <button type="button" data-value="3">3</button>
+          <button type="button" data-value="-" class="op">-</button>
 
-        <button type="button" data-action="equals" class="equals span-4">=</button>
+          <button type="button" data-value="0" class="span-2">0</button>
+          <button type="button" data-value=".">.</button>
+          <button type="button" data-value="+" class="op">+</button>
+
+          <button type="button" data-action="equals" class="equals span-4">=</button>
+        </div>
+        <p class="hint">Keyboard support: numbers, + - * /, Enter, Backspace</p>
       </div>
-      <p class="hint">Keyboard support: numbers, + - * /, Enter, Backspace</p>
     </section>
 
     <section class="panel workspace-panel" id="workspace" aria-labelledby="workspace-title">
@@ -105,6 +113,67 @@
       </div>
       <p class="tip" id="ideaTip" hidden>Tip: Start with one feature at a time, like a stopwatch or to-do list, and I will add it here.</p>
     </section>
+
+    <section class="panel feedback-panel" id="feedback" aria-labelledby="feedback-title">
+      <div class="panel-head">
+        <h2 id="feedback-title">Share Feedback & Feature Requests</h2>
+        <span class="badge badge-alt">Community</span>
+      </div>
+      <p class="feedback-intro">Users can share their experience, suggest features, and report issues. Submitting opens a pre-filled GitHub issue so feedback is saved online.</p>
+
+      <form id="feedbackForm" class="feedback-form">
+        <div class="feedback-grid">
+          <label class="field">
+            <span>Type</span>
+            <select id="feedbackType" name="type">
+              <option value="Experience Feedback">Experience Feedback</option>
+              <option value="Feature Request">Feature Request</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="Improvement Tip">Improvement Tip</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Your Name (optional)</span>
+            <input id="feedbackName" name="name" type="text" maxlength="50" placeholder="Your name" />
+          </label>
+
+          <label class="field">
+            <span>Rating</span>
+            <select id="feedbackRating" name="rating">
+              <option value="5">5 - Excellent</option>
+              <option value="4">4 - Good</option>
+              <option value="3" selected>3 - Okay</option>
+              <option value="2">2 - Needs work</option>
+              <option value="1">1 - Poor</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Contact (optional)</span>
+            <input id="feedbackContact" name="contact" type="text" maxlength="80" placeholder="Email or social handle" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Experience / Tips / Problem</span>
+          <textarea id="feedbackMessage" name="message" rows="5" maxlength="800" placeholder="Tell us what you liked, what can improve, or what problem you found..." required></textarea>
+        </label>
+
+        <label class="field">
+          <span>Feature You Want (optional)</span>
+          <input id="feedbackFeature" name="feature" type="text" maxlength="120" placeholder="Example: Stopwatch, To-do List, Weather widget" />
+        </label>
+
+        <div class="feedback-actions">
+          <button type="submit" class="tool-btn feedback-submit">Submit via GitHub</button>
+          <button type="button" class="ghost-btn" id="copyFeedbackBtn">Copy Feedback Text</button>
+        </div>
+
+        <p class="feedback-note">This opens GitHub in a new tab. Users may need a GitHub account to submit. No private info please.</p>
+        <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
+      </form>
+    </section>
   </main>
 
   <footer class="footer">
@@ -114,4 +183,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-

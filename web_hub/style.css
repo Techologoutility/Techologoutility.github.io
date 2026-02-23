@@ -391,3 +391,134 @@ body {
     transition: none !important;
   }
 }
+
+.feedback-panel {
+  grid-column: 1 / -1;
+}
+
+.feedback-intro {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.feedback-form {
+  display: grid;
+  gap: 12px;
+}
+
+.feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(5, 8, 16, 0.78);
+  color: var(--text);
+  font: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: 2px solid rgba(83, 241, 200, 0.28);
+  outline-offset: 1px;
+  border-color: rgba(83, 241, 200, 0.35);
+}
+
+.feedback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.feedback-submit {
+  width: auto;
+  min-width: 190px;
+  background: linear-gradient(135deg, rgba(83, 241, 200, 0.2), rgba(90, 166, 255, 0.2));
+}
+
+.feedback-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.feedback-status {
+  margin: 0;
+  min-height: 1.2em;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.feedback-status.error {
+  color: var(--warn);
+}
+
+@media (max-width: 700px) {
+  .feedback-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.calc-head-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.calculator-content {
+  display: grid;
+  gap: 12px;
+}
+
+.calc-panel.is-collapsed {
+  grid-row: span 1;
+  align-self: start;
+}
+
+.calc-closed-hint {
+  margin-top: 2px;
+}
+
+#clearAllBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#toggleCalculatorBtn {
+  border-color: rgba(90, 166, 255, 0.25);
+}
+
+@media (max-width: 560px) {
+  .calc-head-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .calc-head-actions .ghost-btn {
+    flex: 1 1 auto;
+  }
+}
