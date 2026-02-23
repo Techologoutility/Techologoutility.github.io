@@ -248,6 +248,16 @@ function maybeOpenCalculatorFromHash() {
   }
 }
 
+function setEmojiOpen(shouldOpen) {
+  if (!emojiSection || !emojiContent || !emojiClosedHint || !toggleEmojiBtn) return;
+
+  isEmojiOpen = Boolean(shouldOpen);
+  emojiContent.hidden = !isEmojiOpen;
+  emojiSection.classList.toggle("is-collapsed", !isEmojiOpen);
+  emojiClosedHint.hidden = isEmojiOpen;
+  toggleEmojiBtn.setAttribute("aria-expanded", String(isEmojiOpen));
+  toggleEmojiBtn.textContent = isEmojiOpen ? "Hide Emoji Fun" : "Show Emoji Fun";
+}
 function maybeOpenEmojiFromHash() {
   if (window.location.hash === "#emoji-playground") {
     setEmojiOpen(true);
@@ -554,12 +564,12 @@ async function copyFeedbackDraft() {
 }
 
 document.querySelector(".calc-grid").addEventListener("click", handleButtonClick);
-document.querySelector(".emoji-picker").addEventListener("click", handleEmojiPickerClick);
+document.querySelector(".emoji-picker")?.addEventListener("click", handleEmojiPickerClick);
 clearAllBtn.addEventListener("click", resetCalculator);
 toggleCalculatorBtn.addEventListener("click", () => setCalculatorOpen(!isCalculatorOpen));
 clockRegionSelect.addEventListener("change", () => { updateClock(); startClockTicker(); });
-toggleEmojiBtn.addEventListener("click", () => setEmojiOpen(!isEmojiOpen));
-emojiBurstPower.addEventListener("input", updateEmojiBurstLabel);
+toggleEmojiBtn?.addEventListener("click", () => setEmojiOpen(!isEmojiOpen));
+emojiBurstPower?.addEventListener("input", updateEmojiBurstLabel);
 document.addEventListener("keydown", handleKeyboard);
 themeSelect.addEventListener("change", (event) => applyTheme(event.target.value));
 window.addEventListener("hashchange", maybeOpenCalculatorFromHash);
@@ -573,9 +583,10 @@ year.textContent = new Date().getFullYear();
 initializeTheme();
 resetCalculator();
 setCalculatorOpen(false);
-setEmojiOpen(false);
-updateEmojiBurstLabel();
+if (emojiSection) setEmojiOpen(false);
+if (emojiBurstPower && emojiBurstValue) updateEmojiBurstLabel();
 startClockTicker();
+
 
 
 
